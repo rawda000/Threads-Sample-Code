@@ -1,9 +1,11 @@
 package com.rawda.threads_code_sample;
 
+import androidx.annotation.MainThread;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -83,13 +85,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             for (int i = 0; i < seconds; i++) {
                 if (i == 5) {
-                    handler.post(new Runnable() {
+                    Handler handler1 = new Handler(Looper.getMainLooper());
+                    handler1.post(new Runnable() {
                         @Override
                         public void run() {
-                            percentageTextView.setText("... 50%");
+                            percentageTextView.setText("50%");
                         }
                     });
-
                 }
                 try {
                     Thread.sleep(1000);
