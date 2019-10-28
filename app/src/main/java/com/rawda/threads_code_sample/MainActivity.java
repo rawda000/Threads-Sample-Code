@@ -3,16 +3,20 @@ package com.rawda.threads_code_sample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private Button startThread1;
     private Button startThread2;
+    private TextView percentageTextView;
     private Switch aSwitch;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         startThread1 = findViewById(R.id.startThread1_button);
         startThread2 = findViewById(R.id.startThread2_button);
-
+        percentageTextView = findViewById(R.id.percentage_textView);
         aSwitch = findViewById(R.id.switch_);
         startThread1.setOnClickListener(this);
         startThread2.setOnClickListener(this);
@@ -78,6 +82,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             for (int i = 0; i < seconds; i++) {
+                if (i == 5) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            percentageTextView.setText("... 50%");
+                        }
+                    });
+
+                }
                 try {
                     Thread.sleep(1000);
                     Log.i(TAG, "startThread: " + i);
