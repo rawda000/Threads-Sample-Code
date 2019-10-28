@@ -85,12 +85,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             for (int i = 0; i < seconds; i++) {
                 if (i == 5) {
-                    percentageTextView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            percentageTextView.setText("50%");
-                        }
-                    });
+                  runOnUiThread(new Runnable() {
+                      @Override
+                      public void run() {
+                          percentageTextView.setText("50%");
+                      }
+                  });
                 }
                 try {
                     Thread.sleep(1000);
