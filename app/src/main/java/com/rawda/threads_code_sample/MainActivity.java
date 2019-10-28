@@ -85,8 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             for (int i = 0; i < seconds; i++) {
                 if (i == 5) {
-                    Handler handler1 = new Handler(Looper.getMainLooper());
-                    handler1.post(new Runnable() {
+                    percentageTextView.post(new Runnable() {
                         @Override
                         public void run() {
                             percentageTextView.setText("50%");
