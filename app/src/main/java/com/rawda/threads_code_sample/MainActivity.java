@@ -1,11 +1,9 @@
 package com.rawda.threads_code_sample;
 
-import androidx.annotation.MainThread;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,20 +14,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
     private Button startThread1;
     private Button startThread2;
+    private Button stopThreadButton;
     private TextView percentageTextView;
     private Switch aSwitch;
     private Handler handler = new Handler();
+    private volatile boolean stopThread = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startThread1 = findViewById(R.id.startThread1_button);
-        startThread2 = findViewById(R.id.startThread2_button);
+        startThread2 = findViewById(R.id.startThread_button);
+        stopThreadButton = findViewById(R.id.stopThread2_button);
+
         percentageTextView = findViewById(R.id.percentage_textView);
         aSwitch = findViewById(R.id.switch_);
         startThread1.setOnClickListener(this);
         startThread2.setOnClickListener(this);
+        stopThreadButton.setOnClickListener(this);
     }
 
     @Override
@@ -37,20 +40,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         if (id == R.id.startThread1_button) {
             startThread1();
-        } else if (id == R.id.startThread2_button) {
+        } else if (id == R.id.startThread_button) {
             startThread2();
+        } else if (id == R.id.stopThread2_button) {
+            stopThread();
         }
     }
 
     private void startThread1() {
+        stopThread = false;
         MyThread thread = new MyThread(10);
         thread.start();
     }
 
 
     private void startThread2() {
+        stopThread = false;
         MyRunnableThread thread = new MyRunnableThread(10);
         new Thread(thread).start();
+    }
+
+    private void stopThread() {
+        stopThread = true;
     }
 
     class MyThread extends Thread {
@@ -64,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             super.run();
             for (int i = 0; i < seconds; i++) {
+                if (stopThread) return;
                 try {
                     Thread.sleep(1000);
                     Log.i(TAG, "startThread: " + i);
@@ -84,13 +96,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             for (int i = 0; i < seconds; i++) {
+                if (stopThread) return;
                 if (i == 5) {
-                  runOnUiThread(new Runnable() {
-                      @Override
-                      public void run() {
-                          percentageTextView.setText("50%");
-                      }
-                  });
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            percentageTextView.setText("50%");
+                        }
+                    });
                 }
                 try {
                     Thread.sleep(1000);
